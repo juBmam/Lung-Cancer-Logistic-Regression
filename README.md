@@ -1,1 +1,4 @@
-# Metis-Project-3
+# Metis Project 3: Predicting Lung Cancer Risk Levels in Patients  
+In this project, I used a kaggle dataset  and attempted to classify the target risk levels based on a large set of self-reported medical features, including but not limited to obesity, exposure to secondhand smoke, smoking, a balanced diet, age, gender, dust allergies, and more. I think that this data could help people self-diagnose risk levels and give them a good estimate of where they lie on the spectrum for cancer risk without having to pay for a trip to the docotrs and exposing themself to deadly diseases, such as COVID-19, given the current context.  
+Tools used: SQL, Matplotlib, Seaborn, SKLearn, Pickles, Flask, D3, among others. 
+Source: https://www.kaggle.com/christopherwsmith/how-to-predict-lung-cancer-levels-100-accuracy
