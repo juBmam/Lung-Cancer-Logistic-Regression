@@ -1,0 +1,257 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Risk Prediction</title>
+    <link rel="stylesheet" href="static/d3.slider.css" />
+    <style>
+
+     body {
+       font-family: Lato,sans-serif;
+     }
+
+     .bordered {
+    	width: 800px;
+    	height: 910px;
+    	padding: 20px;
+    	border: 10px solid green;
+     }	
+    
+
+     h1 {
+     	font-size: 4.0em;
+     	margin: 0px 60 5px 0;
+     	color: black;
+
+     }
+
+     h2 {
+       font-size: 1.2em;
+       margin: 50px 0 5px 0;
+       color: black;
+     }
+
+
+     h3 {
+       font-size: 1.0em;
+       margin: 20px 0 5px 0;
+       color: black;
+     }
+
+     .space {
+       margin-bottom: 20 px;
+     }
+
+     .wrapper {
+       width: 800px;
+       margin-left: auto;
+       margin-right: auto;
+       margin-bottom: 0px;
+     }
+
+     #bar_chart {
+       margin-bottom: 0 px;
+     }
+
+     span {
+       color: blue;
+     }
+
+    </style>
+  </head>
+
+  <body>
+
+  	<div class ="bordered">
+
+    <div id="sliders" class="wrapper">
+
+      <h1>Cancer Risk Predictor</h1>
+      <h1>Metis Project 3</h1>	
+
+      <h3>Start by moving the Alcohol Use slider!..</h3>
+
+      <h2 class="feature">Obesity: <span id="obese">4</span></h2>
+      <div id="obese_slider"></div>
+
+      <h2 class="feature">Coughing of Blood: <span id="blood">5</span></h2>
+      <div id="blood_slider"></div>
+
+      <h2 class="feature">Secondhand Smoke Exposure: <span id="smoke">4</span></h2>
+      <div id="smoke_slider"></div>
+
+      <h2 class="feature">Dust Allergy: <span id="dust">4</span></h2>
+      <div id="dust_slider"></div>
+
+      <h2 class="feature">Alcohol Use: <span id="alc">4</span></h2>
+      <div id="alc_slider"></div>
+
+      <h2 class="feature">Genetic Risk: <span id="gene">4</span></h2>
+      <div id="gene_slider"></div>
+
+    <div id="chart_area" class="wrapper">
+      <h2>Your Risk:</h2>
+      <p class="space"></p>
+      <div id="response">
+      </div>
+    </div>
+	</div>
+    </div>
+
+    <!-- Import the libraries: jQuery, d3, d3.slider -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="static/d3.slider.js"></script>
+
+    <script>
+
+     var current_obese = 4;
+     var current_blood = 5;
+     var current_smoke = 4;
+     var current_dust = 4;
+     var current_alc = 4;
+     var current_gene = 4;
+     var current_smoke2 = 4;
+
+     var risk = d3.select("#response")
+                   .append("svg:svg")
+                   .attr("width", 800)
+                   .attr("height", 100);
+
+
+     risk.append("text")
+        .attr("id", "percent_text")
+        .attr("dy", ".75em")
+        .attr("y", 15)
+        .attr("x", 0)
+        .attr("text-anchor", "margin-left")
+        .attr("fill", "black")
+        .attr("font-size", 40)
+
+
+
+
+
+     function predict(obese, blood, smoke, dust, alcohol, genetic){
+
+       
+       $.ajax({
+         type: "POST",
+         contentType: "application/json; charset=utf-8",
+         url: "/score",
+         dataType: "json",
+         async: true,
+         data: "{\"example\": ["+obese+","+blood+","+smoke+", "+dust+", "+alcohol+", "+genetic+"]}",
+         success: function (data) {
+           var chance = data["score"];
+            d3.select("#percent_text")
+             .attr("x", chance)
+             .text(chance);
+         },
+         error: function (result) {
+         }
+       })
+     }
+
+
+     <!-- SLIDERS -->
+
+     d3.select('#obese_slider')
+       .call(
+         d3.slider()
+           .value(current_obese)
+           .min(1)
+           .max(7)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#obese').text(value);
+             current_obese = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+     d3.select('#blood_slider')
+       .call(
+         d3.slider()
+           .value(current_blood)
+           .min(1)
+           .max(9)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#blood').text(value);
+             current_blood = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+     d3.select('#smoke_slider')
+       .call(
+         d3.slider()
+           .value(current_smoke)
+           .min(1)
+           .max(8)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#smoke').text(value);
+             current_smoke = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+     d3.select('#dust_slider')
+       .call(
+         d3.slider()
+           .value(current_dust)
+           .min(1)
+           .max(8)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#dust').text(value);
+             current_dust = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+     d3.select('#alc_slider')
+       .call(
+         d3.slider()
+           .value(current_alc)
+           .min(1)
+           .max(8)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#alc').text(value);
+             current_alcohol = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+     d3.select('#gene_slider')
+       .call(
+         d3.slider()
+           .value(current_gene)
+           .min(1)
+           .max(7)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#gene').text(value);
+             current_gene = value;
+             predict(current_obese, current_blood, current_smoke, current_dust, current_alcohol, current_gene)
+           }
+           )
+       );
+
+    </script>
+  </body>
+</html>
+
